@@ -15,37 +15,37 @@ export class Product {
     public imageUrl: string[],
     public price: number,
     public description: string
-  ) {
-    this.id = id;
-    this.name = name;
-    this.imageUrl = imageUrl;
-    this.price = price;
-    this.description = description;
-  }
+  ) {}
 }
 
 export function sortProductsBy(sort: Sort, products: Product[]): Product[] {
-  let copiedList: Product[] = [];
-  products.forEach((product) => copiedList.push(product));
-
-  let sortedList: Product[] = [];
-  if (sort === Sort.PRICE_ASCENDING) {
-    sortedList = sortList("Price", copiedList);
-    sortedList.reverse();
-  } else if (sort === Sort.PRICE_DECENDING) {
-    sortedList = sortList("Price", copiedList);
-  } else if (sort === Sort.NAME_ALPHABETIC) {
-    sortedList = sortList("Name", copiedList);
-  } else if (sort === Sort.NAME_ALPHABETIC_REVERSE) {
-    sortedList = sortList("Name", copiedList);
-    sortedList.reverse();
+  let sortedList = products.slice();
+  
+  switch (sort) {
+    case Sort.PRICE_ASCENDING:
+      sortedList = sortList("Price", sortedList);
+      sortedList.reverse();
+      break;
+    case Sort.PRICE_DECENDING:
+      sortedList = sortList("Price", sortedList);
+      break;
+    case Sort.NAME_ALPHABETIC:
+      sortedList = sortList("Name", sortedList);
+      break;
+    case Sort.NAME_ALPHABETIC_REVERSE:
+      sortedList = sortList("Name", sortedList);
+      sortedList.reverse();
+      break;
+    default:
+      break;
   }
-
   return sortedList;
 }
 
 function sortList(whichAttribute: string, products: Product[]): Product[] {
-  return products.sort((p1, p2) => {
+  return products.sort((p1, p2) => (whichAttribute === "Price" ? p2.price - p1.price : p1.name.localeCompare(p2.name)));
+}
+  /* return products.sort((p1, p2) => {
     if (whichAttribute === "Price") {
       if (p1.price < p2.price) {
         return 1;
@@ -62,7 +62,7 @@ function sortList(whichAttribute: string, products: Product[]): Product[] {
       return 0;
     }
   });
-}
+} */
 
 /*
   2. Refaktorera funktionen createProductHtml :)
