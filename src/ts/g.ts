@@ -1,3 +1,7 @@
+import { Product, Student, Temp, User } from "../ts/models/Classes"
+
+
+
 /*
   1. Se om du kan hitta två stycken code smells i följande funktion och rätta till dem.
   Funktionen tar emot en lista med längdhoppslängder och syftet med funktionen är att summera
@@ -15,14 +19,6 @@ function getLengthForHighjump(jumpings: number[]): number {
   2. I detta exempel har vi fokuserat på if-statements. Se om du kan göra exemplet bättre!
   */
 
-class Student {
-  constructor(
-    public name: string,
-    public handedInOnTime: boolean,
-    public passed: boolean
-  ) {}
-}
-
 function getStudentStatus(student: Student): string {
   if (student.handedInOnTime == true) {
     student.passed = true;
@@ -31,6 +27,7 @@ function getStudentStatus(student: Student): string {
     student.passed = false;
     return `${student.name}, your result is IG`;
   }
+  return 'No result can be given';
 }
 
 /*
@@ -38,38 +35,23 @@ function getStudentStatus(student: Student): string {
   Det finns flera code smells att identifiera här. Vissa är lurigare än andra.
   */
 
-class Temp {
-  constructor(
-    public place: string, 
-    public date: Date, 
-    public temperature: number
-  ) {}
-}
-
-function dailyTempInStockholm(temp: Temp) {
-  return temp.place === "Stockholm" && temp.date.getTime() > Date.now() - 604800000;
+function weeklyTempInStockholm(temp: Temp) {
+  const MILLISECONDS_PER_WEEK = 604800000;
+  return temp.place === "Stockholm" && temp.date.getTime() > Date.now() - MILLISECONDS_PER_WEEK;
 }
   
 function averageWeeklyTemperature(temp: Temp[]) {
+  const DAYS_IN_WEEK = 7;
   const totalTemperatureForOneWeek = 
-  temp.filter(dailyTempInStockholm).reduce((totalTemperatureForOneWeek, temp) => totalTemperatureForOneWeek + temp.temperature, 0);
-  return totalTemperatureForOneWeek / 7;
+  temp.filter(weeklyTempInStockholm).reduce((totalTemperatureForOneWeek, temp) => totalTemperatureForOneWeek + temp.temperature, 0);
+
+  return totalTemperatureForOneWeek / DAYS_IN_WEEK;
 }
 
 /*
   4. Följande funktion kommer att presentera ett objekt i dom:en. 
   Se om du kan göra det bättre. Inte bara presentationen räknas, även strukturer.
   */
-class Product {
-  constructor(
-    public name: string,
-    public price: number,
-    public amount: number,
-    public description: string,
-    public image: string,
-    public parent: HTMLElement
-  ) {}
-}
 
 function showProduct(product: Product, parent: HTMLElement) {
   const container = document.createElement("div");
@@ -86,26 +68,37 @@ function showProduct(product: Product, parent: HTMLElement) {
   5. Följande funktion kommer presentera studenter. Men det finns ett antal saker som 
   går att göra betydligt bättre. Gör om så många som du kan hitta!
   */
+
+function createStudentHtml(student: Student): HTMLElement {
+  const container = document.createElement("div");
+  const passedStudents = document.createElement("ul");
+  const failedStudents = document.createElement("ul");
+  const checkbox = document.createElement("input");
+
+  checkbox.type = "checkbox";
+  checkbox.checked = student.handedInOnTime;
+
+  passedStudents.id = "passedstudents";
+  failedStudents.id = "failedstudents";
+
+  container.appendChild(checkbox);
+  container.appendChild(failedStudents);
+  container.appendChild(passedStudents);
+  
+  return container;
+}
+
 function presentStudents(students: Student[]) {
+  const passedStudentsList = document.getElementById("passedstudents");
+  const failedStudentsList = document.getElementById("failedstudents");
+
   for (const student of students) {
+    const studentHTML = createStudentHtml(student);
+
     if (student.handedInOnTime) {
-      let container = document.createElement("div");
-      let checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = true;
-
-      container.appendChild(checkbox);
-      let listOfStudents = document.querySelector("ul#passedstudents");
-      listOfStudents?.appendChild(container);
+      passedStudentsList?.appendChild(studentHTML);
     } else {
-      let container = document.createElement("div");
-      let checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = false;
-
-      container.appendChild(checkbox);
-      let listOfStudents = document.querySelector("ul#failedstudents");
-      listOfStudents?.appendChild(container);
+      failedStudentsList?.appendChild(studentHTML);
     }
   }
 }
@@ -126,21 +119,12 @@ function concatenateTexts() {
     fler och fler parametrar behöver läggas till? T.ex. avatar eller adress. Hitta en bättre
     lösning som är hållbar och skalar bättre. 
 */
-class User {
-  constructor (
-    public name: string,
-    public birthday: Date,
-    public email: string,
-    public password: string
-  ) {}
-} 
 
 function createUser(user: User) {
   const ageDiff = Date.now() - user.birthday.getTime();
   const ageDate = new Date(ageDiff);
   const userAge = Math.abs(ageDate.getUTCFullYear() - 1970);
 
-  console.log(userAge);
 
   if (userAge >= 20) {
     return "Ditt konto har skapats";
