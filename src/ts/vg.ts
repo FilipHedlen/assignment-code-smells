@@ -45,28 +45,21 @@ export function sortProductsBy(sort: Sort, products: Product[]): Product[] {
 function sortList(whichAttribute: string, products: Product[]): Product[] {
   return products.sort((p1, p2) => (whichAttribute === "Price" ? p2.price - p1.price : p1.name.localeCompare(p2.name)));
 }
-  /* return products.sort((p1, p2) => {
-    if (whichAttribute === "Price") {
-      if (p1.price < p2.price) {
-        return 1;
-      } else if (p1.price > p2.price) {
-        return -1;
-      }
-      return 0;
-    } else {
-      if (p1.name < p2.name) {
-        return 1;
-      } else if (p1.name > p2.name) {
-        return -1;
-      }
-      return 0;
-    }
-  });
-} */
+
 
 /*
   2. Refaktorera funktionen createProductHtml :)
   */
+interface Product {
+  name: string;
+  price: number;
+  picture: string;
+  pictureAlt: string;
+  info: string;
+  category: string;
+  quantity: number;
+}
+
 class Cart {
   addToCart(i: number) {}
 }
@@ -129,7 +122,7 @@ export function createProductHtml() {
     dogImg.addEventListener("click", () => {
       productList[i].productSpec = !productList[i].productSpec;
       window.location.href = "product-spec.html#backArrow";
-      let listastext = JSON.stringify(productList);
+      let listText = JSON.stringify(productList);
       localStorage.setItem("savedList", listastext);
     });
 
@@ -166,8 +159,8 @@ export function createProductHtml() {
       cat5.appendChild(dogproduct);
     }
   }
-  let listastext = JSON.stringify(productList);
-  localStorage.setItem("savedList", listastext);
+  const listText = JSON.stringify(productList);
+  localStorage.setItem("savedList", listText);
   sessionStorage.clear();
 }
 
