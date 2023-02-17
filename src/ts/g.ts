@@ -121,9 +121,10 @@ function concatenateTexts() {
 */
 
 function createUser(user: User) {
-  const ageDiff = Date.now() - user.birthday.getTime();
-  const ageDate = new Date(ageDiff);
-  const userAge = Math.abs(ageDate.getUTCFullYear() - 1970);
+  const EPOCH_YEAR = 1970;
+  const userAgeDiff = Date.now() - user.birthday.getTime();
+  const userAgeDate = new Date(userAgeDiff);
+  const userAge = Math.abs(userAgeDate.getUTCFullYear() - EPOCH_YEAR);
 
 
   if (userAge >= 20) {
